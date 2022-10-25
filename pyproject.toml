@@ -1,0 +1,73 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "textual-tutorial"
+description = ''
+readme = "README.md"
+requires-python = ">=3.7"
+license = "MIT"
+keywords = []
+authors = [
+  { name = "Waylon S. Walker", email = "waylon@waylonwalker.com" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = ['textual']
+dynamic = ["version"]
+
+[project.scripts]
+tutorial = 'textual_tutorial.tui:tui'
+
+[project.urls]
+Documentation = "https://github.com/unknown/textual-tutorial#readme"
+Issues = "https://github.com/unknown/textual-tutorial/issues"
+Source = "https://github.com/unknown/textual-tutorial"
+
+[tool.hatch.version]
+path = "textual_tutorial/__about__.py"
+
+
+[project.optional-dependencies]
+dev = [
+  'textual[dev]',
+  "pytest",
+  "pytest-cov",
+]
+
+[tool.hatch.envs.default]
+dependencies = [
+  'textual[dev]',
+  "pytest",
+  "pytest-cov",
+]
+[tool.hatch.envs.default.scripts]
+cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=textual_tutorial --cov=tests {args}"
+no-cov = "cov --no-cov {args}"
+
+[[tool.hatch.envs.test.matrix]]
+python = ["37", "38", "39", "310", "311"]
+
+[tool.coverage.run]
+branch = true
+parallel = true
+omit = [
+  "textual_tutorial/__about__.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]

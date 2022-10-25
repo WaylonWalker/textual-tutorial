@@ -1,0 +1,2 @@
+def tui():
+    print("running")
