@@ -1,13 +1,15 @@
+import os
 from pathlib import Path
-from textual.app import App, ComposeResult
-from textual.css.query import NoMatches
-from textual.widgets import Header, Footer
-
-from textual.containers import Container
-from textual.widgets import Button, Header, Footer, Static
-
-from textual.reactive import reactive
+import subprocess
+import tempfile
 from time import monotonic
+
+from textual.app import App, ComposeResult
+from textual.containers import Container
+from textual.css.query import NoMatches
+from textual.reactive import reactive
+from textual.widgets import Button, Footer, Header, Static
+import tomlkit
 
 
 class TimeDisplay(Static):
@@ -86,6 +88,7 @@ class StopwatchApp(App):
         ("j", "next", "Next"),
         ("k", "prev", "Prev"),
         ("space", "toggle", "Toggle"),
+        ("e", "edit", "Edit"),
     ]
 
     def on_mount(self):
@@ -111,6 +114,16 @@ class StopwatchApp(App):
 
     def action_prev(self):
         self.activate(-1)
+
+    def action_edit(self):
+        prompt = {"prompt": "this is the prompt"}
+        editor = os.environ.get("EDITOR", "vim")
+        file = tempfile.NamedTemporaryFile(prefix="lockhart", suffix=".toml")
+        file.write(tomlkit.dumps(prompt).encode())
+        file.seek(0)
+        proc = subprocess.Popen([editor, file.name])
+        proc.wait()
+        self.refresh()
 
     def action_toggle(self):
         try:
@@ -170,9 +183,10 @@ class StopwatchApp(App):
 
 def tui():
 
-    from textual.features import parse_features
     import os
     import sys
+
+    from textual.features import parse_features
 
     dev = "--dev" in sys.argv
     features = set(parse_features(os.environ.get("TEXTUAL", "")))
