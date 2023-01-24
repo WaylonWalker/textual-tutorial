@@ -121,9 +121,11 @@ class StopwatchApp(App):
         file = tempfile.NamedTemporaryFile(prefix="lockhart", suffix=".toml")
         file.write(tomlkit.dumps(prompt).encode())
         file.seek(0)
-        proc = subprocess.Popen([editor, file.name])
-        proc.wait()
+        self._driver.stop_application_mode()
+        with subprocess.Popen([editor, file.name]) as proc:
+            proc.wait()
         self.refresh()
+        self._driver.start_application_mode()
 
     def action_toggle(self):
         try:
