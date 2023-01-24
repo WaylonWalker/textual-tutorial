@@ -28,6 +28,7 @@ dynamic = ["version"]
 
 [project.scripts]
 tutorial = 'textual_tutorial.tui:tui'
+stopwatch = 'textual_tutorial.tui:tui'
 
 [project.urls]
 Documentation = "https://github.com/unknown/textual-tutorial#readme"
